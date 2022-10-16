@@ -7,7 +7,9 @@ import 'package:ticket/utils/app_styles.dart';
 import 'package:ticket/widget/thick_container.dart';
 
 class TicketView extends StatelessWidget {
-  const TicketView({super.key});
+  final Map<String, dynamic> ticket;
+
+  const TicketView({Key? key, required this.ticket}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +17,10 @@ class TicketView extends StatelessWidget {
     final size = AppLayout.getSize(context);
 
     return SizedBox(
-      width: size.width,
+      width: size.width * 0.85,
       height: 200,
       child: Container(
-        margin: const EdgeInsets.only(left: 16),
+        margin: const EdgeInsets.only(right: 16),
         child: Column(
           children: [
             // NOTE: 위쪽(파란카드)
@@ -43,7 +45,7 @@ class TicketView extends StatelessWidget {
                     // NOTE: mainAxisAlignment 랑 같은 효과가 나는데 어떤차이인지는 모르겠음.
                     //  const Spacer(),
                     Expanded(child: Container()),
-                    ThickContainer(),
+                    const ThickContainer(),
                     //  const Spacer(),
                     Expanded(
                         child: Stack(children: [
@@ -76,7 +78,7 @@ class TicketView extends StatelessWidget {
                       Center(
                         child: Transform.rotate(
                           angle: 1.5,
-                          child: Icon(
+                          child: const Icon(
                             Icons.local_airport_rounded,
                             color: Colors.white,
                           ),
@@ -84,7 +86,7 @@ class TicketView extends StatelessWidget {
                       ),
                     ])),
 
-                    ThickContainer(),
+                    const ThickContainer(),
                     //  const Spacer(),
                     Expanded(child: Container()),
 
@@ -102,18 +104,18 @@ class TicketView extends StatelessWidget {
                     SizedBox(
                       width: 100,
                       child: Text(
-                        '뉴욕',
+                        ticket['from']['code'],
                         style:
                             Styles.headLineStyle4.copyWith(color: Colors.white),
                       ),
                     ),
-                    Text('8시 30분',
+                    Text(ticket['flying_time'],
                         style: Styles.headLineStyle4
                             .copyWith(color: Colors.white)),
                     SizedBox(
                       width: 100,
                       child: Text(
-                        '런던',
+                        ticket['to']['code'],
                         textAlign: TextAlign.end,
                         style:
                             Styles.headLineStyle4.copyWith(color: Colors.white),
@@ -127,18 +129,122 @@ class TicketView extends StatelessWidget {
             ,
             Container(
               color: Styles.orangeColor,
-              child: Row(children: const [
-                SizedBox(
+              child: Row(children: [
+                const SizedBox(
                   height: 20,
                   width: 10,
                   child: DecoratedBox(
-                      decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                  )),
-                )
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
+                    ),
+                  ),
+                ),
+                //NOTE: 공간을 차지
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      return Flex(
+                        direction: Axis.horizontal,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: List.generate(
+                            (constraints.constrainWidth() / 15).floor(),
+                            (index) => const SizedBox(
+                                  width: 5,
+                                  height: 1,
+                                  child: DecoratedBox(
+                                      decoration:
+                                          BoxDecoration(color: Colors.white)),
+                                )),
+                      );
+                    },
+                  ),
+                )),
+                const SizedBox(
+                  height: 20,
+                  width: 10,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)),
+                    ),
+                  ),
+                ),
               ]),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Styles.orangeColor,
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(21),
+                    bottomRight: Radius.circular(21)),
+              ),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '5월1일',
+                            style: Styles.headLineStyle3
+                                .copyWith(color: Colors.white),
+                          ),
+                          const Gap(5),
+                          Text(
+                            '날짜',
+                            style: Styles.headLineStyle4
+                                .copyWith(color: Colors.white),
+                          )
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            ticket['flying_time'],
+                            style: Styles.headLineStyle3
+                                .copyWith(color: Colors.white),
+                          ),
+                          const Gap(5),
+                          Text(
+                            ticket['departue_time'],
+                            style: Styles.headLineStyle4
+                                .copyWith(color: Colors.white),
+                          )
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            ticket['date'],
+                            style: Styles.headLineStyle3
+                                .copyWith(color: Colors.white),
+                          ),
+                          const Gap(5),
+                          Text(
+                            ticket['date'],
+                            style: Styles.headLineStyle4
+                                .copyWith(color: Colors.white),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
             )
           ],
         ),
